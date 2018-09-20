@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ user.username }} - Eden Of The East
+{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+<li class="breadcrumb-item active">{{ user.username }}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="container bg-info">
+    <img src="{{ user.profile.image_url }}" alt="user" class="img-responsive my-2">
+    <h3 class="text-white">{{ user.username }}</h3>
+    {% for tag in tags %}
+        <div class="card mb-2 px-4"> 
+        <div class="card-body p-3">
+            <div class="row">
+                <div class="col-10">
+                    <p class="text-primary text-center my-auto" style="font-size: 20px;">{{ tag.description }}</p>    
+                </div>
+                <div class="col-2">
+                    <a href="{% url 'tags' tag.created_by.pk %}"><img src="{{ tag.created_by.profile.image_url }}" alt="posted_by" class="img-responsive img-circle" style="width: 50px; height: 50px;"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+{% endblock content %}
