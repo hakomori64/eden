@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from edensystem import views 
+from edensystem import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('', views.home, name='home'),
+    path('<int:user_pk>/', views.tags, name='tags'),
+    path('admin/', admin.site.urls),
 ]
