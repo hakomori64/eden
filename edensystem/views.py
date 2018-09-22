@@ -26,7 +26,7 @@ def add_tag(request, user_pk):
         if form.is_valid():
             tag = form.save(commit=False)
             tag.user = user
-            tag.created_by = user
+            tag.created_by = request.user
             tag.save()
 
             return redirect('tags', user_pk=user_pk)

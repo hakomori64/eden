@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from sorl.thumbnail import ImageField
 
 
 GENDER_CHOICES = (
@@ -15,7 +16,7 @@ def get_filename(instance, filename):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sex = models.CharField("gender", max_length=6, choices=GENDER_CHOICES, default='male')
-    thumbnail = models.ImageField(upload_to=get_filename)
+    thumbnail = ImageField(upload_to=get_filename)
 
     def image_url(self):
         if not (self.thumbnail and hashattr(self.thumbnail, 'url')):

@@ -22,10 +22,10 @@
                         <div class="media">
                             {% if each.profile.thumbnail %}
                             {% thumbnail each.profile.thumbnail "100x100" crop="center" as im %}
-                            <a href="{% url 'tags' each.pk %}"><img src="{{ im.url }}" alt="{{ each.username }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+                                <a href="{% url 'tags' each.pk %}"><img src="{{ im.url }}" alt="{{ each.username }}" width="{{ im.width }}" height="{{ im.height }}"></a>
                             {% endthumbnail %}
                             {% else %}
-                            <a href="{% url 'tags' each.pk %}"><img src="{{ each.profile.image_url }}" alt="{{ each.username }}" width="100" height="100"></a>
+                                <a href="{% url 'tags' each.pk %}"><img src="{{ each.profile.image_url }}" alt="{{ each.username }}" width="100" height="100"></a>
                             {% endif %}
                             <div class="media-body ml-4">
                

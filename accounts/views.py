@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from edensystem.forms import SignUpForm
+from .forms import SignUpForm, UploadThumbnailForm
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 
@@ -17,7 +17,22 @@ def signup(request):
 
     return render(request, 'signup.html', {'form': form})
 
-def profile(request, profile_pk):
-    profile = get_object_or_404(User, pk=profile_pk)
+def profile(request):
+    return render(request, 'profile.html')
 
-    return render(request, 'profile.html', {'profile': profile})
+def upload(request):
+    user = request.user
+
+    if request.method == 'POST':
+        form = UploadThumbnailForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            user.profile.thumbnail = form.cleaned_data['thumbnail']
+            user.save()
+
+            return redirect('profile')
+    
+    else:
+        form = UploadThumbnailForm()
+
+    return render(request, 'upload.html', {'form': form})
