@@ -7,29 +7,32 @@
 {% block content %}
 <a href="#" class="btn btn-primary btn-sm mx-2 my-2" role="button">Analyze A Photo</a>
 
-        {% for user in users %}
+        {% for each in users %}
+        {% with each.user_tags.all|first as first_tag %}
         <div class="card mb-2">
             {% if forloop.first %}
-            <div class="card-header text-white bg-info py-2 px-3">users</div>
+            <div class="card-header text-white bg-info py-2 px-3 " style="height: 60px;font-size: 30px;">Users</div>
             {% endif %}
             <div class="card-body p-3">
                 
                 <div class="row">
                     <div class="col-9">
                         <div class="media">
-                            <a href="{% url 'tags' user.pk %}"><img src="{{ user.profile.image_url }}" alt="{{ user.username }}" class="pull-left img-thumbnail img"></a>
+                            <a href="{% url 'tags' each.pk %}"><img src="{{ each.profile.image_url }}" alt="{{ each.username }}" class="pull-left img-thumbnail img"></a>
                             <div class="media-body ml-4">
-                                <h3 class="media-heading" style="font-size: 50px;"><a href="{% url 'tags' user.pk %}">{{ user.username }}</a></h3>
-                                <div class="d-flex align-items-center mt-4">Latest Tag</div>
+               
+                                <h3 class="media-heading" style="font-size: 50px;"><a href="{% url 'tags' each.pk %}">{{ each.username }}</a></h3>
+                                <strong class="d-flex align-items-center text-muted mt-4" style="font-size: 30px;">{{ first_tag.description }}</strong>
                             </div>
                         </div>
                     </div>
                     <div class="col-3">
-                        <small class="text-muted text-right">Last Addition: 0</small>
+                        <small class="text-muted text-right">{{ first_tag.created_at }}</small>
                     </div>
                 </div>
             </div>
         </div>
+        {% endwith %}
            
         {% endfor %}
 {% endblock content %}

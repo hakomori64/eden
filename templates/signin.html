@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block body %}
+<div class="container">
+    <div class="card mt-5">
+        <div class="card-header"><h2>Sign in</h2></div>
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% include "includes/form.html" %}
+                <button type="submit" class="btn btn-primary">Sign in</button>
+            </form>
+        </div>
+        <div class="card-footer text-muted text-center">
+            You don't have an account yet? <a href="{% url 'signup' %}">Sign up</a>
+        </div>
+    </div>
+</div>
+{% endblock body %}

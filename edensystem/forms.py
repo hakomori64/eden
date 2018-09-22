@@ -1,15 +1,24 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profile
+from django.contrib.auth.forms import UserCreationForm
+from .models import Profile, Tag
+
+GENDER_CHOICES = (
+    ("male", '男性'),
+    ("female", '女性'),
+)
 
 
-class UserForm(forms.ModelForm):
+class SignUpForm(UserCreationForm):
+    sex = forms.ChoiceField(label="性別", widget=forms.Select, choices=GENDER_CHOICES,)
+
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email')
+        fields = ('username', 'sex', 'password1', 'password2',)
 
+        
+class AddTagForm(forms.ModelForm):
     
-class ProfileForm(forms.ModelForm):
     class Meta:
-        model = Profile
-        fields = ('nickname', 'image')
+        model = Tag
+        fields = ('description',)

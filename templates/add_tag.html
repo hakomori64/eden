@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add A Tag to {{ each.username }}
+{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+<li class="breadcrumb-item"><a href="{% url 'tags' each.pk %}">{{ each.username }}</a></li>
+<li class="breadcrumb-item active">Add A Tag to {{ each.username }}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<form method="post" novalidate>
+    {% csrf_token %}
+    {% include "includes/form.html" %}
+    <div class="form-inline">
+        <button type="submit" class="btn btn-success ml-2">Add!</button>
+        <a href="{% url 'tags' user.pk %}" class="btn btn-danger mx-1">Back</a>
+    </div>
+</form>
+{% endblock content %}
