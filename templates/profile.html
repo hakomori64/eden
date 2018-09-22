@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% load thumbnail %}
+
+{% block body %}
+<div class="container">
+    <div class="card mt-5">
+        <div class="card-header"><h2>Your Profile</h2></div>
+        <div class="card-body">
+            <table class="table">
+                <tr>
+                    <th scope="row">Username</th>
+                    <td>{{ user.username }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">avatar</th>
+                    <td>
+                        {% if user.profile.thumbnail %}
+                        {% thumbnail user.profile.thumbnail "100x100" crop="center" as im %}
+                        <img src="{{ im.url }}" alt="{{ user.username }}">
+                        {% endthumbnail %}
+                        {% else %}
+                        <img src="{{ user.profile.image_url }}" alt="{{ user.username }}">
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+            <a href="#" class="btn" style="background: rgb(156, 238, 145);">Upload thumbnail</a>
+        </div>
+        <div class="card-footer text-center">
+            <a href="{% url 'home' %}" class="btn btn-primary">Back to Home</a>
+        </div>
+    </div>
+</div>
+{% endblock body %}

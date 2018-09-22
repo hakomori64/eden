@@ -9,11 +9,13 @@ GENDER_CHOICES = (
     ("female", 'female'),
 )
 
+def get_filename(instance, filename):
+    return '/'.join(['profile', instance.user.username, filename]) + '/'
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sex = models.CharField("gender", max_length=6, choices=GENDER_CHOICES, default='male')
-    thumbnail = models.ImageField()
+    thumbnail = models.ImageField(upload_to=get_filename)
 
     def image_url(self):
         if not (self.thumbnail and hashattr(self.thumbnail, 'url')):

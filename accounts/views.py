@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from edensystem.forms import SignUpForm
 from django.contrib.auth import login
+from django.contrib.auth.models import User
 
 def signup(request):
     if request.method == 'POST':
@@ -15,3 +16,8 @@ def signup(request):
         form = SignUpForm()
 
     return render(request, 'signup.html', {'form': form})
+
+def profile(request, profile_pk):
+    profile = get_object_or_404(User, pk=profile_pk)
+
+    return render(request, 'profile.html', {'profile': profile})

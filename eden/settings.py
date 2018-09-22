@@ -135,3 +135,6 @@ LOGIN_REDIRECT_URL = 'home'
 
 LOGIN_URL = 'signin'
 LOGIN_ERROR_URL = 'signin'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
