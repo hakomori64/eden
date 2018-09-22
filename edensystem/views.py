@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Tag
 from .forms import AddTagForm
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
@@ -16,7 +17,7 @@ def tags(request, user_pk):
 
     return render(request, 'tags.html', {'each': user, 'tags': tags})
 
-
+@login_required
 def add_tag(request, user_pk):
     user = get_object_or_404(User, pk=user_pk)
     
