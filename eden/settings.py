@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'edensystem.apps.EdensystemConfig',
     'accounts.apps.AccountsConfig',
-    'widget_tweaks'
+    'widget_tweaks',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [

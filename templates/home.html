@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load thumbnail %}
+
 {% block breadcrumb %}
 <li class="breadcrumb-item active">Home</li>
 {% endblock breadcrumb %}
@@ -18,7 +20,13 @@
                 <div class="row">
                     <div class="col-9">
                         <div class="media">
-                            <a href="{% url 'tags' each.pk %}"><img src="{{ each.profile.image_url }}" alt="{{ each.username }}" class="pull-left img-thumbnail img"></a>
+                            {% if each.profile.thumbnail %}
+                            {% thumbnail each.profile.thumbnail "100x100" crop="center" as im %}
+                            <a href="{% url 'tags' each.pk %}"><img src="{{ im.url }}" alt="{{ each.username }}" width="{{ im.width }}" height="{{ im.height }}"></a>
+                            {% endthumbnail %}
+                            {% else %}
+                            <a href="{% url 'tags' each.pk %}"><img src="{{ each.profile.image_url }}" alt="{{ each.username }}" width="100" height="100"></a>
+                            {% endif %}
                             <div class="media-body ml-4">
                
                                 <h3 class="media-heading" style="font-size: 50px;"><a href="{% url 'tags' each.pk %}">{{ each.username }}</a></h3>

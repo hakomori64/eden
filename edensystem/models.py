@@ -16,9 +16,7 @@ class Profile(models.Model):
     thumbnail = models.ImageField()
 
     def image_url(self):
-        if self.thumbnail and hashattr(self.thumbnail, 'url'):
-            return self.thumbnail.url
-        else:
+        if not (self.thumbnail and hashattr(self.thumbnail, 'url')):
             if self.sex == 'male':
                 return '/static/img/if_male3_403019.svg'
             else:
