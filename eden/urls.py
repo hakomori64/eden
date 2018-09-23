@@ -29,7 +29,8 @@ urlpatterns = [
     path('signin/', auth_views.LoginView.as_view(template_name='signin.html'), name='signin'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('profile/', accounts_views.profile, name='profile'),
-    path('profile/upload', accounts_views.upload, name='upload_thumbnail'),
+    path('profile/upload/', accounts_views.upload, name='upload_thumbnail'),
+    path('profile/upimages/', views.UploadFiles.as_view(), name='upload_images'),
     path('admin/', admin.site.urls),
 ]
 

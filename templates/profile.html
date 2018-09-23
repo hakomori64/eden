@@ -30,14 +30,20 @@
                     <td>
                         {% if user.images.all.count > 0 %}
                         {% with user.images.all|first as first_image %}
+                        <figure>
                         {% thumbnail first_image.image "100x100" crop="center" as im %}
                         <img src="{{ im.url }}" alt="{{ user.username }}" width="{{ im.width }}" height="{{ im.height }}">
                         {% endthumbnail %}
                         {% endwith %}
+                        <figcaption>{{ user.images.all.count }} images uploaded</figcaption>
+                        </figure>
                         {% else %}
+                        <figure>
                         <img src="/static/img/no-images.svg" alt="{{ user.username }}" width="100" height="100">
+                        <figcaption>No images</figcaption>
+                        </figure>
                         {% endif %}
-                        <a href="#" class="btn float-right btn-warning">Upload Images</a>
+                        <a href="{% url 'upload_images' %}" class="btn float-right btn-warning">Upload Images</a>
                     </td>
                 </tr>
             </table>

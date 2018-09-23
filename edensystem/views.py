@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Tag
-from .forms import AddTagForm
+from .models import Tag, Image
+from .forms import AddTagForm, ImageForm
 from django.contrib.auth.decorators import login_required
+from django.views.generic.edit import FormView
 
 
 def home(request):
@@ -35,3 +36,20 @@ def add_tag(request, user_pk):
         form = AddTagForm()
 
     return render(request, 'add_tag.html', {'each': user, 'form': form})  
+
+
+class UploadFiles(FormView):
+    form_class = ImageForm
+    template_name = 'upload_images.html'
+    success_url = '/profile/'
+
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        files = request.FILES.getlist('image')
+
+        if form.is_valid():
+
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)

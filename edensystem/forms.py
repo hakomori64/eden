@@ -11,8 +11,9 @@ class AddTagForm(forms.ModelForm):
 
 
 class ImageForm(forms.ModelForm):
-    image = forms.ImageField(label='Image')
-
     class Meta:
         model = Image
         fields = ('image',)
+        widgets = {
+            'image': forms.FileInput(attrs={'multiple': True}),
+        }
