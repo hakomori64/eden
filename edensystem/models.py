@@ -10,16 +10,19 @@ GENDER_CHOICES = (
     ("female", 'female'),
 )
 
-def get_filename(instance, filename):
+def get_thumbnail(instance, filename):
     return '/'.join(['profile', instance.user.username, filename]) + '/'
+
+def get_image(instance, filename):
+    return '/'.join(['profile', instance.user.username, 'train', filename]) + '/'
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sex = models.CharField("gender", max_length=6, choices=GENDER_CHOICES, default='male')
-    thumbnail = ImageField(upload_to=get_filename)
+    thumbnail = ImageField(upload_to=get_thumbnail)
 
     def image_url(self):
-        if not (self.thumbnail and hashattr(self.thumbnail, 'url')):
+        if not (self.thumbnail):
             if self.sex == 'male':
                 return '/static/img/if_male3_403019.svg'
             else:
@@ -43,3 +46,8 @@ class Tag(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+
+class Image(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to=get_image)
