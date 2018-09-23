@@ -49,7 +49,9 @@ class UploadFiles(FormView):
         files = request.FILES.getlist('image')
 
         if form.is_valid():
-
+            for f in files:
+                instance = Image(user=request.user, image=f)
+                instance.save()
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
