@@ -5,6 +5,9 @@ from .models import Tag, Image
 from .forms import AddTagForm, ImageForm
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import FormView
+import shutil
+import os.path
+from django.conf import settings
 
 
 def home(request):
@@ -49,6 +52,11 @@ class UploadFiles(FormView):
         files = request.FILES.getlist('image')
 
         if form.is_valid():
+            directory = settings.MEDIA_ROOT + '/origin/' + request.user.username
+            if os.path.exists(directory):
+                shutil.rmtree(directory)
+                request.user.images.all().delete()
+
             for f in files:
                 instance = Image(user=request.user, image=f)
                 instance.save()

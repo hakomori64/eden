@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SignUpForm, UploadThumbnailForm
 from django.contrib.auth import login
 from django.contrib.auth.models import User
+import shutil
+from django.conf import settings
 
 def signup(request):
     if request.method == 'POST':
@@ -27,6 +29,8 @@ def upload(request):
         form = UploadThumbnailForm(request.POST, request.FILES)
 
         if form.is_valid():
+            path = settings.MEDIA_ROOT + '/profile/' + request.user.username
+            shutil.rmtree(path)
             user.profile.thumbnail = form.cleaned_data['thumbnail']
             user.save()
 

@@ -14,7 +14,7 @@ def get_thumbnail(instance, filename):
     return '/'.join(['profile', instance.user.username, filename]) + '/'
 
 def get_image(instance, filename):
-    return '/'.join(['profile', instance.user.username, 'train', filename]) + '/'
+    return '/'.join(['origin', instance.user.username, filename]) + '/'
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
