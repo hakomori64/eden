@@ -35,7 +35,13 @@
                         <img src="{{ im.url }}" alt="{{ user.username }}" width="{{ im.width }}" height="{{ im.height }}">
                         {% endthumbnail %}
                         {% endwith %}
-                        <figcaption>{{ user.images.all.count }} images uploaded</figcaption>
+                        <figcaption>
+                            {% if user.images.count > 10 %}
+                                enough images for deep learning
+                            {% else %}
+                                more images are needed
+                            {% endif %}
+                        </figcaption>
                         </figure>
                         {% else %}
                         <figure>
@@ -44,6 +50,9 @@
                         </figure>
                         {% endif %}
                         <a href="{% url 'upload_images' %}" class="btn float-right btn-warning">Upload Images</a>
+                        {% if user.images.count > 10 %}
+                        <a href="{% url 'train' %}" class="btn float-right btn-danger mt-3">Start Learning!</a>
+                        {% endif %}
                     </td>
                 </tr>
             </table>

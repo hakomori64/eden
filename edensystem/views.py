@@ -8,6 +8,7 @@ from django.views.generic.edit import FormView
 import shutil
 import os.path
 from django.conf import settings
+from background_task import background
 
 
 def home(request):
@@ -53,7 +54,7 @@ class UploadFiles(FormView):
 
         if form.is_valid():
             directory = settings.MEDIA_ROOT + '/origin/' + request.user.username
-            if os.path.exists(directory):
+            if len(request.user.images.all()) > 10:
                 shutil.rmtree(directory)
                 request.user.images.all().delete()
 
@@ -63,3 +64,15 @@ class UploadFiles(FormView):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
+
+
+def train(request):
+    learning(request.user.id, schedule=60)
+    message = 'Now learning your face...<br>Your face can be recognized after a few minutes.'
+
+    return render(request, 'train.html', {'message': message})
+
+@background(schedule=60)
+def learning(user_id):
+    user = User.objects.get(pk=user_id)
+    return

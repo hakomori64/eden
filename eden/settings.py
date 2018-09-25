@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'widget_tweaks',
     'sorl.thumbnail',
+    'background_task',
 ]
 
 MIDDLEWARE = [
