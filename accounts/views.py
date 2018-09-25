@@ -4,6 +4,7 @@ from django.contrib.auth import login
 from django.contrib.auth.models import User
 import shutil
 from django.conf import settings
+import os.path
 
 def signup(request):
     if request.method == 'POST':
@@ -30,7 +31,8 @@ def upload(request):
 
         if form.is_valid():
             path = settings.MEDIA_ROOT + '/profile/' + request.user.username
-            shutil.rmtree(path)
+            if os.path.exists(path):
+                shutil.rmtree(path)
             user.profile.thumbnail = form.cleaned_data['thumbnail']
             user.save()
 

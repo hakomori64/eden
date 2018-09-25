@@ -68,9 +68,10 @@ class UploadFiles(FormView):
 
 def train(request):
     learning(request.user.id, schedule=60)
-    message = 'Now learning your face...<br>Your face can be recognized after a few minutes.'
+    title = 'Now learning your face...'
+    content = 'Your face can be recognized after a few minutes.'
 
-    return render(request, 'train.html', {'message': message})
+    return render(request, 'train.html', {'title': title, 'content': content})
 
 @background(schedule=60)
 def learning(user_id):
