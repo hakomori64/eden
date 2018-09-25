@@ -36,11 +36,13 @@
                         {% endthumbnail %}
                         {% endwith %}
                         <figcaption>
+                            <strong class="text-muted">
                             {% if user.images.count > 10 %}
-                                enough images for deep learning
+                                Enough Images
                             {% else %}
-                                more images are needed
+                                More Images are needed
                             {% endif %}
+                            </strong>
                         </figcaption>
                         </figure>
                         {% else %}
@@ -49,7 +51,7 @@
                         <figcaption>No images</figcaption>
                         </figure>
                         {% endif %}
-                        <a href="{% url 'upload_images' %}" class="btn float-right btn-warning">Upload Images</a>
+                        <a href="{% url 'upload_images' %}" class="btn float-right btn-warning mt-3 ml-3">Upload Images</a>
                         {% if user.images.count > 10 %}
                         <a href="{% url 'train' %}" class="btn float-right btn-danger mt-3">Start Learning!</a>
                         {% endif %}
@@ -57,8 +59,8 @@
                 </tr>
             </table>
         </div>
-        <div class="card-footer text-center">
-            <a href="{% url 'home' %}" class="btn btn-primary">Back to Home</a>
+        <div class="card-footer text-right">
+            <a href="{% url 'home' %}" class="mr-2 btn btn-primary">Back to Home</a>
         </div>
     </div>
 </div>
