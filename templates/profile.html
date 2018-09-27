@@ -52,7 +52,7 @@
                         </figure>
                         {% endif %}
                         <a href="{% url 'upload_images' %}" class="btn float-right btn-warning mt-3 ml-3">Upload Images</a>
-                        {% if user.images.count > 10 %}
+                        {% if user.images.count >= 10 %}
                         <a href="{% url 'train' %}" class="btn float-right btn-danger mt-3">Start Learning!</a>
                         {% endif %}
                     </td>

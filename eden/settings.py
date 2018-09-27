@@ -139,3 +139,5 @@ LOGIN_ERROR_URL = 'signin'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+CELRY_BROKER_URL = 'amqp://localhost'

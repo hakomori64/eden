@@ -9,6 +9,7 @@ import shutil
 import os.path
 from django.conf import settings
 from background_task import background
+from .tasks import learning
 
 
 def home(request):
@@ -53,10 +54,25 @@ class UploadFiles(FormView):
         files = request.FILES.getlist('image')
 
         if form.is_valid():
-            directory = settings.MEDIA_ROOT + '/origin/' + request.user.username
-            if len(request.user.images.all()) > 10:
-                shutil.rmtree(directory)
+            origin_path = settings.MEDIA_ROOT + '\\origin\\' + request.user.username
+            face_image_path = settings.MEDIA_ROOT + '\\face_image\\' + request.user.username
+            test_image_path = settings.MEDIA_ROOT + '\\test_image\\' + request.user.username
+            if len(request.user.images.all()) >= 10:
+                if os.path.exists(origin_path):
+                    shutil.rmtree(origin_path)
+                if os.path.exists(face_image_path):
+                    shutil.rmtree(face_image_path)
+                if os.path.exists(test_image_path):
+                    shutil.rmtree(test_image_path)
+                
                 request.user.images.all().delete()
+            
+            if not os.path.exists(origin_path):
+                os.makedirs(origin_path)
+            if not os.path.exists(face_image_path):
+                os.makedirs(face_image_path)
+            if not os.path.exists(test_image_path):
+                os.makedirs(test_image_path)
 
             for f in files:
                 instance = Image(user=request.user, image=f)
@@ -67,13 +83,9 @@ class UploadFiles(FormView):
 
 
 def train(request):
-    learning(request.user.id, schedule=60)
+    learning(request.user.id)
     title = 'Now learning your face...'
     content = 'Your face can be recognized after a few minutes.'
 
     return render(request, 'train.html', {'title': title, 'content': content})
 
-@background(schedule=60)
-def learning(user_id):
-    user = User.objects.get(pk=user_id)
-    return
