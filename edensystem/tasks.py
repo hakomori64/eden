@@ -66,4 +66,4 @@ def modify(user_id):
 
     random.shuffle(in_jpg)
     for i in range(len(in_jpg)//5):
-        shutil.copyfile(str(in_jpg[i]), settings.MEDIA_ROOT + '\\test_image\\' + img_file_name_list[i])
+        shutil.copyfile(str(in_jpg[i]), settings.MEDIA_ROOT + '\\test_image\\' + user.username + '\\' + img_file_name_list[i])

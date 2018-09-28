@@ -37,7 +37,7 @@
                         {% endwith %}
                         <figcaption>
                             <strong class="text-muted">
-                            {% if user.images.count > 10 %}
+                            {% if user.images.count >= 10 %}
                                 Enough Images
                             {% else %}
                                 More Images are needed
