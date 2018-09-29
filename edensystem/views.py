@@ -57,6 +57,7 @@ class UploadFiles(FormView):
             origin_path = settings.MEDIA_ROOT + '\\origin\\' + request.user.username
             face_image_path = settings.MEDIA_ROOT + '\\face_image\\' + request.user.username
             test_image_path = settings.MEDIA_ROOT + '\\test_image\\' + request.user.username
+            scratch_image_path = settings.MEDIA_ROOT + '\\extended\\' + request.user.username
             if len(request.user.images.all()) >= 10:
                 if os.path.exists(origin_path):
                     shutil.rmtree(origin_path)
@@ -64,7 +65,9 @@ class UploadFiles(FormView):
                     shutil.rmtree(face_image_path)
                 if os.path.exists(test_image_path):
                     shutil.rmtree(test_image_path)
-                
+                if os.path.exists(scratch_image_path):
+                    shutil.rmtree(scratch_image_path)
+                                
                 request.user.images.all().delete()
             
             if not os.path.exists(origin_path):
@@ -73,6 +76,8 @@ class UploadFiles(FormView):
                 os.makedirs(face_image_path)
             if not os.path.exists(test_image_path):
                 os.makedirs(test_image_path)
+            if not os.path.exists(scratch_image_path):
+                os.makedirs(scratch_image_path)
 
             for f in files:
                 instance = Image(user=request.user, image=f)
