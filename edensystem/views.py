@@ -88,7 +88,7 @@ class UploadFiles(FormView):
 
 
 def train(request):
-    learning(request.user.id)
+    learning.delay(request.user.id)
     title = 'Now learning your face...'
     content = 'Your face can be recognized after a few minutes.'
 
