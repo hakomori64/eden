@@ -205,3 +205,49 @@ def define_model(X_train, y_train):
     model.fit(X_train, y_train, batch_size=32, epochs=50)
 
     model.save("my_model.h5")
+
+
+@shared_task
+def detect_face(image):
+    print(image.shape)
+
+    image_gs = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    cascade = cv2.CascadeClassifier(settings.MEDIA_ROOT + '\\cascade\\haarcascade_frontalface_alt.xml')
+
+    face_list = cascade.detectMultiScale(image_gs, scaleFactor=1.1, minNeighbors=2, minSize=(64,64))
+
+    if len(face_list) > 0:
+        for rect in face_list:
+            x, y, width, height = rect
+            cv2.rectangle(image, tuple(rect[0:2]), tuple(rect[0:2]+rect[2:4]), (255, 0, 0), thickness=3)
+            img = image[rect[1]:rect[1]+rect[3], rect[0]:rect[0]+rect[2]]
+
+            if img.shape[0] < 64:
+                print("too small")
+                continue
+            img = cv2.resize(img, (64, 64))
+            img = np.expand_dims(img, axis=0)
+            name = detect_who(img)
+            cv2.putText(image, name, (x, y+height+20), cv2.FONT_HERSHEY_DUPLEX, 1, (255, 0, 0), 2)
+
+        if name == None:
+            print("no face")
+    
+    else:
+        print("no face")
+
+    return image
+
+@shared_task
+def detect_who(img):
+    name = ""
+    model = load_model('my_model.h5')
+    
+    with open('users.json') as f:
+        users = json.load(f)
+
+    label = np.argmax(model.predict(img))
+
+    return users[label]
+
+
