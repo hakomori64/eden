@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block breadcrumb %}
+<li class="breadcrumb-item">Result</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+{% for file, pk in dictionary.items %}
+<div class="container mx-auto">
+    <div class="card mx-auto">
+        <img src="{{ file }}" alt="user" style="width: 16em; height: 16em;" class="mx-auto mt-3">
+        <div class="card-body mx-auto">
+            <a href="/{{ pk }}" class="btn btn-primary mx-auto">All tags</a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock content %}

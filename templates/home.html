@@ -7,7 +7,7 @@
 {% endblock breadcrumb %}
 
 {% block content %}
-<a href="#" class="btn btn-primary btn-sm mx-2 my-2" role="button">Analyze A Photo</a>
+<a href="{% url 'upload' %}" class="btn btn-primary btn-sm mx-2 my-2" role="button">Detect A Photo</a>
 
         {% for each in users %}
         {% with each.user_tags.all|first as first_tag %}

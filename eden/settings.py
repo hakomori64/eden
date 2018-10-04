@@ -141,3 +141,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 CELRY_BROKER_URL = 'amqp://localhost'
+BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600 * 10}

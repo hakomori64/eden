@@ -16,6 +16,8 @@ from keras.utils.np_utils import to_categorical
 import json
 from keras.layers import Activation, Conv2D, Dense, Flatten, MaxPooling2D
 from keras.models import Sequential, load_model
+from keras import backend as K
+import subprocess
 
 
 @shared_task
@@ -25,15 +27,47 @@ def add(x, y):
 @shared_task
 def learning(user_id):
     print("learning function is called")
-    modify(user_id)
-    scratch_image(user_id)
-    X_train, y_train = face_answer_into_list()
-    define_model(X_train, y_train)
+    wrapper()
+    X_train, y_train, users = face_answer_into_list()
+    define_model(X_train, y_train, users)
+    cmd = "celery -A eden purge"
+    subprocess.call(cmd, shell=True)
 
     return
 
 
-@shared_task
+def wrapper():
+    origin_path = settings.MEDIA_ROOT + '\\origin'
+    face_image_path = settings.MEDIA_ROOT + '\\face_image'
+    scratch_image_path = settings.MEDIA_ROOT + '\\extended'
+
+    _users = os.listdir(origin_path)
+    users = []
+    
+    for i in range(len(_users)):
+        files = os.listdir(settings.MEDIA_ROOT + '\\origin\\' + _users[i])
+        if len(files) != 0:
+            users.append(_users[i])
+            continue
+    
+    for username in users:
+        print(username)
+
+    for username in users:
+        user = User.objects.get(username=username)
+        
+        shutil.rmtree(face_image_path + '\\' + username)
+        os.makedirs(face_image_path + '\\' + username)
+
+        modify(user.pk)
+
+        shutil.rmtree(scratch_image_path + '\\' + username)
+        os.makedirs(scratch_image_path + '\\' + username)
+
+        scratch_image(user.pk)
+
+
+
 def modify(user_id):
     print("modify function is called")
     user = User.objects.get(pk=user_id)
@@ -86,7 +120,7 @@ def modify(user_id):
         shutil.copyfile(str(in_jpg[i]), settings.MEDIA_ROOT + '\\test_image\\' + user.username + '\\' + img_file_name_list[i])
 
 
-@shared_task
+
 def draw_images(generator, x, dir_name, index):
     print("draw_images function is called")
     # 出力ファイルの設定
@@ -100,7 +134,7 @@ def draw_images(generator, x, dir_name, index):
         bach = g.next()
 
 
-@shared_task
+
 def scratch_image(user_id):
     print("scratch_image function is called")
     user = User.objects.get(pk=user_id)
@@ -134,14 +168,15 @@ def scratch_image(user_id):
         draw_images(generator, x, output_dir, i)
 
 
-@shared_task
+
 def face_answer_into_list():
-    users = os.listdir(settings.MEDIA_ROOT + '\\extended')
+    _users = os.listdir(settings.MEDIA_ROOT + '\\extended')
+    users = []
     
-    for i in range(len(users)):
-        files = os.listdir(settings.MEDIA_ROOT + '\\extended\\' + users[i])
-        if len(files) == 0:
-            users.pop(i)
+    for i in range(len(_users)):
+        files = os.listdir(settings.MEDIA_ROOT + '\\extended\\' + _users[i])
+        if len(files) != 0:
+            users.append(_users[i])
             continue
 
     # print(users)
@@ -163,9 +198,13 @@ def face_answer_into_list():
             b, g, r = cv2.split(img)
             img = cv2.merge([r, g, b])
             X_train.append(img)
-            y_train = np.append(y_train, users.index(user)).reshape(i + 1, 1)
+            y_train.append(users.index(user))
         
+
+    length = len(y_train)    
     X_train = np.array(X_train)
+    y_train = np.array(y_train)
+    np.reshape(y_train, (length, 1))
 
     # print(X_train)
     # print(y_train)
@@ -173,16 +212,18 @@ def face_answer_into_list():
     with open('users.json', 'w') as outfile:
         json.dump(users, outfile)
 
-    return X_train, y_train
+    return X_train, y_train, users
 
 
-@shared_task
-def define_model(X_train, y_train):
+
+def define_model(X_train, y_train, users):
 
     print(X_train)
     print(y_train)
     print(len(X_train))
     print(len(y_train))
+
+    y_train = to_categorical(y_train)
 
     model = Sequential()
     model.add(Conv2D(input_shape=(64, 64, 3), filters=32, kernel_size=(2, 2), strides=(1, 1), padding="same"))
@@ -200,14 +241,14 @@ def define_model(X_train, y_train):
     model.add(Activation('softmax'))
 
 
-    model.compile(optimizer='sgd', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accuracy'])
 
     model.fit(X_train, y_train, batch_size=32, epochs=50)
 
     model.save("my_model.h5")
 
 
-@shared_task
+
 def detect_face(image):
     print(image.shape)
 
@@ -228,7 +269,7 @@ def detect_face(image):
             img = cv2.resize(img, (64, 64))
             img = np.expand_dims(img, axis=0)
             name = detect_who(img)
-            cv2.putText(image, name, (x, y+height+20), cv2.FONT_HERSHEY_DUPLEX, 1, (255, 0, 0), 2)
+            cv2.putText(image, name, (x, y+height+100), cv2.FONT_HERSHEY_DUPLEX, 5, (0, 0, 0), 5)
 
         if name == None:
             print("no face")
@@ -236,9 +277,9 @@ def detect_face(image):
     else:
         print("no face")
 
-    return image
+    return image, name
 
-@shared_task
+
 def detect_who(img):
     name = ""
     model = load_model('my_model.h5')
@@ -247,6 +288,7 @@ def detect_who(img):
         users = json.load(f)
 
     label = np.argmax(model.predict(img))
+    K.clear_session()
 
     return users[label]
 

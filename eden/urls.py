@@ -32,6 +32,8 @@ urlpatterns = [
     path('profile/upload/', accounts_views.upload, name='upload_thumbnail'),
     path('profile/upimages/', views.UploadFiles.as_view(), name='upload_images'),
     path('train/', views.train, name='train'),
+    path('upload/', views.upload_photo, name='upload'),
+    path('result/', views.result, name='result'),
     path('admin/', admin.site.urls),
 ]
 

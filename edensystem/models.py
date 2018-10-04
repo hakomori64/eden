@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from sorl.thumbnail import ImageField
+from django.conf import settings
 
 
 GENDER_CHOICES = (
@@ -15,6 +16,9 @@ def get_thumbnail(instance, filename):
 
 def get_image(instance, filename):
     return '/'.join(['origin', instance.user.username, filename]) + '/'
+
+def get_image_for_detecting(instance, filename):
+    return settings.MEDIA_ROOT + '\\detecting\\' + filename
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -51,3 +55,7 @@ class Tag(models.Model):
 class Image(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to=get_image)
+
+
+class ImageForDetecting(models.Model):
+    image = models.ImageField(upload_to=get_image_for_detecting)
